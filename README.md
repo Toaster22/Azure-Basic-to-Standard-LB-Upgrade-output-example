@@ -1,11 +1,20 @@
 # Azure Basic to Standard LB Upgrade
 
+## Overview
+This is the process for upgrading a Basic Public IP Address and Basic Load Balancer to Standard SKU versions. Output has been included to show a successful migration process. The process will use the AzureBasicLoadBalancerUpgrade PowerShell module.
+
 ## Before getting started
-Make sure to review [Upgrade from Basic to Standard with PowerShell - Common Questions](https://learn.microsoft.com/en-us/azure/load-balancer/upgrade-basic-standard-with-powershell) document for a list of Common Questions, Unsupported Scenarios, Installation, Pre and Post-Migration steps, and module usage. The information below is from this document. 
+Make sure to review [Upgrade from Basic to Standard with PowerShell](https://learn.microsoft.com/en-us/azure/load-balancer/upgrade-basic-standard-with-powershell) document for a list of Common Questions, Unsupported Scenarios, Installation, Pre and Post-Migration steps, and module usage. The information below is from this document. 
  
 >[!Important]
-> - I am not responsible for any issues you may run into during this process. Open an [Azure Support Ticket](https://learn.microsoft.com/en-us/azure/azure-portal/supportability/how-to-create-azure-support-request) if have any questions or if you're experiencing any issues.
-> - This process WILL cause downtime. The backend is being migrated from a Basic Load Balancer to a Standard Load Balancer during the upgrade process. Again, this WILL cause application downtime.
+> Disclaimer 
+> - This is for demonstration purposes only. I am not responsible for any issues you may run into during this process.
+> - Again, review Microsoft's public process document before completing this process. [Upgrade from Basic to Standard with PowerShell](https://learn.microsoft.com/en-us/azure/load-balancer/upgrade-basic-standard-with-powershell)
+> - Open an [Azure Support Ticket](https://learn.microsoft.com/en-us/azure/azure-portal/supportability/how-to-create-azure-support-request) if have any questions or if you're experiencing any issues.
+
+>[!NOTE]
+> - The backend is being migrated from a Basic Load Balancer to a Standard Load Balancer during the upgrade process.
+> - This process ***WILL*** cause downtime. Plan accordingly.
 
 
 ## Module Installation
@@ -31,13 +40,13 @@ Set the correct Subscription
 Select-AzSubscription -Subscription 1111111-1111-1111-1111-111111111112
 ```
 
-The basic sku resources I'm converted are a dynamic public ip and load balancer named basic-lb-public-ip-test and basic-lb-test2 respectively.
+Two Basic SKU resources will be converted in this example. A dynamic public ip and load balancer named basic-lb-public-ip-test and basic-lb-test2 respectively.
 ```PowerShell
 get-AzPublicIPAddress -Name basic-lb-public-ip-test -ResourceGroupName Lab
 
 ResourceGroupName Name                    Location  PublicIpAllocationMethod IpAddress     PublicIpAddressVersion IdleTimeoutInMinutes ProvisioningState Sku
 ----------------- ----                    --------  ------------------------ ---------     ---------------------- -------------------- ----------------- ---
-Lab               basic-lb-public-ip-test centralus Dynamic                  40.69.170.221 IPv4                   4                    Succeeded         "Basic"
+Lab               basic-lb-public-ip-test centralus Dynamic                  1.1.1.1 IPv4                   4                    Succeeded         "Basic"
 
 get-azLoadBalancer -Name basic-lb-test2 -ResourceGroupName Lab         
 
@@ -131,8 +140,8 @@ Start-AzBasicLoadBalancerUpgrade -ResourceGroupName Lab -BasicLoadBalancerName b
 2025-06-05T18:25:43+00 [Information]:[BackupBasicLoadBalancer] Exporting Basic Load Balancer ARM template to path '/home/USER'...
 2025-06-05T18:25:47+00 [Information]:[BackupBasicLoadBalancer] Completed export Basic Load Balancer ARM template to path '/home/USER/ARMTemplate_basic-lb-test2_Lab_20250605T1825432837.json'...
 2025-06-05T18:25:47+00 [Information]:[LBPublicIPToStatic] Changing public IP addresses to static (if necessary)         
-2025-06-05T18:25:48+00 [Information]:[LBPublicIPToStatic] 'basic-lb-public-ip-test' ('40.69.170.221') was using Dynamic IP, changing to Static IP allocation method.
-2025-06-05T18:25:51+00 [Information]:[LBPublicIPToStatic] Completed the migration of 'basic-lb-public-ip-test' ('40.69.170.221') from Basic SKU and/or dynamic to static
+2025-06-05T18:25:48+00 [Information]:[LBPublicIPToStatic] 'basic-lb-public-ip-test' ('1.1.1.1') was using Dynamic IP, changing to Static IP allocation method.
+2025-06-05T18:25:51+00 [Information]:[LBPublicIPToStatic] Completed the migration of 'basic-lb-public-ip-test' ('1.1.1.1') from Basic SKU and/or dynamic to static
 2025-06-05T18:25:51+00 [Information]:[LBPublicIPToStatic] Public Frontend Migration Completed                           
 2025-06-05T18:25:52+00 [Information]:[RemoveBasicLoadBalancer] Removing Basic Loadbalancer basic-lb-test2 from Resource Group Lab
 2025-06-05T18:26:34+00 [Information]:[RemoveBasicLoadBalancer] Removal of Basic Loadbalancer basic-lb-test2 Completed   
@@ -150,8 +159,8 @@ Start-AzBasicLoadBalancerUpgrade -ResourceGroupName Lab -BasicLoadBalancerName b
 2025-06-05T18:26:35+00 [Information]:[_CreateStandardLoadBalancer] Initiating Standard Load Balancer Creation           
 2025-06-05T18:26:37+00 [Information]:[_CreateStandardLoadBalancer] Standard Load Balancer basic-lb-test2 created successfully
 2025-06-05T18:26:37+00 [Information]:[PublicFEMigration] Initiating Public Frontend Migration                           
-2025-06-05T18:26:38+00 [Information]:[PublicFEMigration] 'basic-lb-public-ip-test' ('40.69.170.221') is using Basic SKU, changing Standard SKU.
-2025-06-05T18:26:41+00 [Information]:[PublicFEMigration] Completed the migration of 'basic-lb-public-ip-test' ('40.69.170.221') from Basic SKU and/or dynamic to static
+2025-06-05T18:26:38+00 [Information]:[PublicFEMigration] 'basic-lb-public-ip-test' ('1.1.1.1') is using Basic SKU, changing Standard SKU.
+2025-06-05T18:26:41+00 [Information]:[PublicFEMigration] Completed the migration of 'basic-lb-public-ip-test' ('1.1.1.1') from Basic SKU and/or dynamic to static
 2025-06-05T18:26:41+00 [Information]:[PublicFEMigration] Saving Standard Load Balancer basic-lb-test2                   
 2025-06-05T18:26:48+00 [Information]:[PublicFEMigration] Public Frontend Migration Completed                            
 2025-06-05T18:26:48+00 [Information]:[AddLoadBalancerBackendAddressPool] Adding BackendAddressPool basic-lb-test2bepool 
@@ -208,14 +217,14 @@ WARNING: 2025-06-05T18:27:02+00 [Warning]:[NsgCreationVM] Updating exising NSGs 
 2025-06-05T18:27:49+00 [Information]:############################## Migration Completed ############################## 
 ```
 
-The migration completed successfully. Checking the resources using the same GET PS commands also shows the SKU as Standard for both resources. Some may have noticed that basic-lb-public-ip-test was originally Dynamically allocated. It was also converted to a Static allocation. 
+The migration completed successfully. Checking the resources using the same GET PS commands also shows the SKU as Standard for both resources. Some may have noticed that basic-lb-public-ip-test was originally Dynamically allocated. basic-lb-public-ip-test was also converted to Static allocation. 
 
 ```PowerShell
 get-AzPublicIPAddress -Name basic-lb-public-ip-test -ResourceGroupName Lab                                               
 
 ResourceGroupName Name                    Location  PublicIpAllocationMethod IpAddress     PublicIpAddressVersion IdleTimeoutInMinutes ProvisioningState Sku
 ----------------- ----                    --------  ------------------------ ---------     ---------------------- -------------------- ----------------- ---
-Lab               basic-lb-public-ip-test centralus Static                   40.69.170.221 IPv4                   4                    Succeeded         "Standard"
+Lab               basic-lb-public-ip-test centralus Static                   1.1.1.1 IPv4                   4                    Succeeded         "Standard"
 
 get-azLoadBalancer -Name basic-lb-test2 -ResourceGroupName Lab                                                           
 
