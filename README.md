@@ -7,7 +7,7 @@ This is the process for upgrading a Basic Public IP Address and Basic Load Balan
 Make sure to review [Upgrade from Basic to Standard with PowerShell](https://learn.microsoft.com/en-us/azure/load-balancer/upgrade-basic-standard-with-powershell) document for a list of Common Questions, Unsupported Scenarios, Installation, Pre and Post-Migration steps, and module usage. The information below is from this document. 
  
 >[!Important]
-> - Disclaimer: This is for demonstration purposes only. I am not responsible for any issues you may run into during this process.
+> - **Disclaimer:** This is for demonstration purposes only. I am not responsible for any issues you may run into during this process.
 > - Again, review Microsoft's public process document before completing this process. [Upgrade from Basic to Standard with PowerShell](https://learn.microsoft.com/en-us/azure/load-balancer/upgrade-basic-standard-with-powershell)
 > - Open an [Azure Support Ticket](https://learn.microsoft.com/en-us/azure/azure-portal/supportability/how-to-create-azure-support-request) if have any questions or if you're experiencing any issues.
 
