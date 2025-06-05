@@ -39,7 +39,20 @@ Set the correct Subscription
 Select-AzSubscription -Subscription 1111111-1111-1111-1111-111111111112
 ```
 
-Two Basic SKU resources will be converted in this example. A dynamic public ip and load balancer named basic-lb-public-ip-test and basic-lb-test2 respectively.
+Check the correct Azure Sub ID is being used again.
+```PowerShell
+Get-AzSubscription
+
+   TenantId: 11111111-1111-1111-1111-111111111111
+
+Name                                  Id                                   State
+----                                  --                                   -----
+MySubscriptionName                    1111111-1111-1111-1111-111111111111
+MySubscriptionName2                   1111111-1111-1111-1111-111111111112 Enabled
+```
+
+## Example Resource Ouput
+Two Basic SKU resources will be converted in this example. A dynamic public ip named basic-lb-public-ip-test and a load balancer named basic-lb-test2.
 ```PowerShell
 get-AzPublicIPAddress -Name basic-lb-public-ip-test -ResourceGroupName Lab
 
@@ -92,11 +105,13 @@ WARNING: Migration causes downtime for the application(s) using the Basic Load B
 The last two lines confirm the check has completed and that basic-lb-test2 a valid migration target.
 
 ## Starting the migration
+The migration can be started by removing the -validateScenarioOnly:$true switch from the last command.
+
 >[!NOTE]
 > The duration of the upgrade process will depend on several factors.
 > My upgrade only took a couple minutes but my configuration was very basic. 
 
-While the process is running we will see two lines about JSON output. The output will use your load balancer's name and the date. The file starting with 'State' can be used for a few things, such as validating a completed migration. The ARMTemplate file is an ARM template of the original deployment. You can keep this in case you need to deploy the Basic SKU LB again before the retirement date.
+The process will output two lines with JSON file names. The file starting with 'State' can be used for post-validation. The ARMTemplate file is an ARM template of the Basic SKU deployment. You can keep this in case you need to deploy the Basic SKU LB again before the retirement date - September 30, 2025.
 ```PowerShell
 JSON backup Basic Load Balancer to file /home/USER/State_LB_basic-lb-test2_Lab_20250605T1825432837.json Completed
 [Information]:[BackupBasicLoadBalancer] Completed export Basic Load Balancer ARM template to path '/home/USER/ARMTemplate_basic-lb-test2_Lab_20250605T1825432837.json'...
@@ -216,7 +231,8 @@ WARNING: 2025-06-05T18:27:02+00 [Warning]:[NsgCreationVM] Updating exising NSGs 
 2025-06-05T18:27:49+00 [Information]:############################## Migration Completed ############################## 
 ```
 
-The migration completed successfully. Checking the resources using the same GET PS commands also shows the SKU as Standard for both resources. Some may have noticed that basic-lb-public-ip-test was originally Dynamically allocated. basic-lb-public-ip-test was also converted to Static allocation. 
+## Post-Migration Check
+The migration completed successfully. Check the resources using the same GET PS commands we originally ran also confirms the SKU is now Standard for both resources. Some may have noticed that basic-lb-public-ip-test was originally Dynamically allocated but it shows as Static now. The allocation method conversion is handled during migration process.
 
 ```PowerShell
 get-AzPublicIPAddress -Name basic-lb-public-ip-test -ResourceGroupName Lab                                               
