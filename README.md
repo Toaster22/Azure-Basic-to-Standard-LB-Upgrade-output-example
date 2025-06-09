@@ -31,24 +31,12 @@ Get-AzSubscription
 Name                                  Id                                   State
 ----                                  --                                   -----
 MySubscriptionName                    1111111-1111-1111-1111-111111111111 Enabled
-MySubscriptionName2                   1111111-1111-1111-1111-111111111112
+MySubscriptionName2                   1111111-1111-1111-1111-111111111112 Enabled
 ```
 
 Set the correct Subscription
 ```PowerShell
 Select-AzSubscription -Subscription 1111111-1111-1111-1111-111111111112
-```
-
-Check the correct Azure Sub ID is being used again.
-```PowerShell
-Get-AzSubscription
-
-   TenantId: 11111111-1111-1111-1111-111111111111
-
-Name                                  Id                                   State
-----                                  --                                   -----
-MySubscriptionName                    1111111-1111-1111-1111-111111111111
-MySubscriptionName2                   1111111-1111-1111-1111-111111111112 Enabled
 ```
 
 ## Example Resource Ouput
